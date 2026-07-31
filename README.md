@@ -25,6 +25,8 @@ Projeto acadêmico — Algoritmos e Programação Orientada a Objetos (POO).
 │   ├── arquitetura_classes.png
 │   ├── fluxograma.puml           → fluxograma.png
 │   └── fluxograma.png
+├── dbdiagram/
+│   └── modelagem_dados.dbml    # Modelagem de dados em DB Diagram (DBML)
 └── mod_dinamic/
     ├── README.md                 # Guia de modelagem dinâmica
     ├── diagrama_sequencia.puml  → diagrama_sequencia.png

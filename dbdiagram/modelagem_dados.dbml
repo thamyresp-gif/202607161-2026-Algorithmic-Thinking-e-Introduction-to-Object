@@ -1,0 +1,54 @@
+Enum tipo_imovel {
+  APARTAMENTO
+  CASA
+  ESTUDIO
+}
+
+Enum status_parcelamento {
+  A_VISTA
+  PARCELADO
+}
+
+Table imovel {
+  id int [pk]
+  tipo tipo_imovel [not null]
+  quartos int [not null]
+  vagas_garagem int [not null]
+}
+
+Table tabela_preco {
+  id int [pk]
+  tipo tipo_imovel [not null]
+  quartos int [not null]
+  valor_base decimal(10,2) [not null]
+  acrescimo_dois_quartos decimal(10,2)
+  desconto_sem_filhos decimal(3,2)
+  garagem_valor_fixo decimal(10,2)
+  garagem_valor_extra decimal(10,2)
+  taxas_contrato decimal(10,2)
+}
+
+Table orcamento {
+  id int [pk]
+  imovel_id int [not null, ref: > imovel.id]
+  tabela_preco_id int [not null, ref: > tabela_preco.id]
+  tem_filhos boolean [not null, default: false]
+  parcelar boolean [not null, default: false]
+  num_parcelas int
+  aluguel_base decimal(10,2) [not null]
+  valor_acrescimos decimal(10,2) [not null, default: 0]
+  valor_desconto decimal(10,2) [not null, default: 0]
+  valor_garagem decimal(10,2) [not null, default: 0]
+  taxa_contrato decimal(10,2) [not null, default: 0]
+  valor_total_mensal decimal(10,2) [not null]
+  parcela_contrato decimal(10,2) [not null, default: 0]
+  status status_parcelamento [not null, default: A_VISTA]
+  criado_em timestamp [not null]
+}
+
+Table parcela {
+  id int [pk]
+  orcamento_id int [not null, ref: > orcamento.id]
+  numero int [not null]
+  valor decimal(10,2) [not null]
+}
