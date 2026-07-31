@@ -1,0 +1,120 @@
+@startuml
+title Diagrama de Sequência — Arquitetura de Camadas
+
+actor Usuario as U
+participant "Camada de Visão\n(View - CLI/HTML)" as V
+participant "Camada de Controle\n(Orcamento)" as C
+participant "Camada de Modelo\n(Imovel, Calculadoras)" as M
+participant "Camada de Persistência\n(GeradorCSV)" as P
+
+== Início do Processamento ==
+
+U -> V : Envia dados do imóvel\n(tipo, quartos, filhos, vagas, parcelar)
+activate V
+
+V -> C : processarOrcamento(dados)
+activate C
+
+C -> M : criarImovel(tipo, quartos, vagas)
+activate M
+
+M --> C : retorna objeto Imovel
+deactivate M
+
+C -> M : calcularAluguelBase(imovel)
+activate M
+
+M -> M : calcularAluguelBase()
+activate M
+
+M --> M : retorna ValorMonetario
+deactivate M
+
+M --> C : retorna aluguel base
+deactivate M
+
+C -> M : calcularAcrescimos(imovel)
+activate M
+
+M -> M : calcularAcrescimo()
+activate M
+
+M --> M : retorna acrescimos
+deactivate M
+
+M --> C : retorna acrescimos
+deactivate M
+
+alt Tem filhos e tipo == Apartamento
+  C -> M : calcularDesconto(imovel, temFilhos=false)
+  activate M
+  M -> M : aplicarDescontoSemFilhos(5%)
+  activate M
+  M --> M : retorna desconto
+  deactivate M
+  M --> C : retorna desconto
+  deactivate M
+else Sem desconto
+else
+  C -> M : calcularGaragem(imovel, vagas)
+  activate M
+  M -> M : calcularGaragem(vagas)
+  activate M
+  M --> M : retorna custo garagem
+  deactivate M
+  M --> C : retorna garagem
+  deactivate M
+end
+
+C -> M : calcularTotalMensal(aluguel, acrescimos, descontos, garagem)
+activate M
+
+M --> C : retorna total mensal
+deactivate M
+
+alt parcelar == true
+  C -> M : calcularTaxaContrato(numParcelas)
+  activate M
+  M -> M : calcularParcelas(taxa, numParcelas)
+  activate M
+  M --> M : retorna List<Parcela>
+  deactivate M
+  M --> C : retorna parcela do contrato
+  deactivate M
+else parcelar == false
+  C -> M : calcularTaxaContrato(1)
+  activate M
+  M --> M : retorna taxa a vista
+  deactivate M
+  M --> C : retorna taxa a vista
+  deactivate M
+end
+
+C -> C : agrupar resultado\n(totalMensal, parcela, parcelas)
+
+C -> P : exportarCSV(orcamento, "orcamento.csv")
+activate P
+
+P -> P : gerarCabecalho()
+activate P
+P --> P : cabecalho
+deactivate P
+
+P -> P : gerarLinhasParcelas(parcelas)
+activate P
+P --> P : linhas CSV
+deactivate P
+
+P --> C : arquivo CSV gerado
+deactivate P
+
+C --> V : retorna Orcamento(completo)
+deactivate C
+
+V -> U : Exibe resumo e link do CSV\n(valor total, parcelas, arquivo exportado)
+activate U
+
+deactivate V
+deactivate U
+
+@enduml

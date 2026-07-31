@@ -1,0 +1,63 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+
+abstract class Imovel {
+    - quartos : int
+    - vagas : int
+    + calcularAluguelBase() : double
+    + calcularAcrescimos() : double
+}
+
+class Apartamento {
+    - VALOR_BASE : double = 700.0
+    - ACRESCIMO_DOIS_QUARTOS : double = 200.0
+    + calcularAluguelBase() : double
+    + calcularAcrescimos() : double
+}
+
+class Casa {
+    - VALOR_BASE : double = 900.0
+    - ACRESCIMO_DOIS_QUARTOS : double = 250.0
+    + calcularAluguelBase() : double
+    + calcularAcrescimos() : double
+}
+
+class Estudio {
+    - VALOR_BASE : double = 1200.0
+    - GARAGEM_DUAS_VAGAS : double = 250.0
+    - GARAGEM_EXTRA : double = 60.0
+    + calcularAluguelBase() : double
+    + calcularGaragem() : double
+}
+
+class Orcamento {
+    - imovel : Imovel
+    - temFilhos : boolean
+    - parcelasContrato : int
+    + calcularTotal() : double
+    + gerarCSV() : void
+    + exibirResumo() : void
+}
+
+class GeradorCSV {
+    + exportar(parcelas : List, caminho : String) : void
+}
+
+class TabelaPreco {
+    - APARTAMENTO_BASE : double = 700.0
+    - CASA_BASE : double = 900.0
+    - ESTUDIO_BASE : double = 1200.0
+    - GARAGEM_CASA_AP : double = 300.0
+    - DESCONTO_SEM_FILHOS : double = 0.05
+    - TAXA_CONTRATO : double = 2000.0
+}
+
+Orcamento --> Imovel : utiliza
+Orcamento --> GeradorCSV : utiliza
+Orcamento --> TabelaPreco : consulta
+Apartamento ..|> Imovel
+Casa ..|> Imovel
+Estudio ..|> Imovel
+
+@enduml

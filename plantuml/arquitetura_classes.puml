@@ -1,0 +1,171 @@
+@startuml
+title Calculadora de Orcamento de Aluguel — Diagrama de Classes
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classAttributeFontSize 12
+skinparam backgroundColor #FEFEFE
+skinparam dpi 150
+skinparam wrapWidth 300
+
+' ==================== ENUMS ====================
+
+enum TipoImovel {
+  APARTAMENTO
+  CASA
+  ESTUDIO
+}
+
+enum TipoParcelamento {
+  A_VISTA
+  PARCELADO
+}
+
+' ==================== VALUE OBJECTS ====================
+
+class ValorMonetario <<value>> {
+  - valor : BigDecimal
+  + ValorMonetario(valor : BigDecimal)
+  + add(outro : ValorMonetario) : ValorMonetario
+  + subtract(outro : ValorMonetario) : ValorMonetario
+  + multiply(fator : BigDecimal) : ValorMonetario
+  + getValor() : BigDecimal
+  + toString() : String
+}
+
+class Parcela <<value>> {
+  - numero : int
+  - valor : ValorMonetario
+  + Parcela(numero : int, valor : ValorMonetario)
+  + getNumero() : int
+  + getValor() : ValorMonetario
+}
+
+' ==================== DOMAIN MODEL ====================
+
+abstract class Imovel <<abstract>> {
+  - quartos : int
+  - vagasGaragem : int
+  - tipo : TipoImovel
+  + getQuartos() : int
+  + getVagasGaragem() : int
+  + getTipo() : TipoImovel
+  + calcularAluguelBase() : ValorMonetario (abstract)
+  + calcularAcrescimo() : ValorMonetario
+  + calcularDesconto() : ValorMonetario
+  + calcularAluguelLiquido() : ValorMonetario
+  + calcularGaragem() : ValorMonetario (abstract)
+  + calcularTotal() : ValorMonetario
+}
+
+class Apartamento <<entity>> {
+  - VALOR_BASE : ValorMonetario = 700.00
+  - ACRESCIMO_DOIS_QUARTOS : ValorMonetario = 200.00
+  - DESCONTO_SEM_FILHOS : BigDecimal = 0.05
+  + calcularAluguelBase() : ValorMonetario
+  + calcularAcrescimo() : ValorMonetario
+  + calcularDesconto(temFilhos : boolean) : ValorMonetario
+  + calcularGaragem(vagas : int) : ValorMonetario
+}
+
+class Casa <<entity>> {
+  - VALOR_BASE : ValorMonetario = 900.00
+  - ACRESCIMO_DOIS_QUARTOS : ValorMonetario = 250.00
+  - ACRESCIMO_GARAGEM : ValorMonetario = 300.00
+  + calcularAluguelBase() : ValorMonetario
+  + calcularAcrescimo() : ValorMonetario
+  + calcularGaragem(vagas : int) : ValorMonetario
+}
+
+class Estudio <<entity>> {
+  - VALOR_BASE : ValorMonetario = 1200.00
+  - GARAGEM_DOIS_VALORES : ValorMonetario = 250.00
+  - GARAGEM_VAGA_EXTRA : ValorMonetario = 60.00
+  + calcularAluguelBase() : ValorMonetario
+  + calcularAcrescimo() : ValorMonetario
+  + calcularGaragem(vagas : int) : ValorMonetario
+}
+
+' ==================== SERVICES ====================
+
+class CalculadoraAluguel <<service>> {
+  + calcular(imovel : Imovel, temFilhos : boolean) : ValorMonetario
+  + aplicarDesconto(valor : ValorMonetario, taxa : BigDecimal) : ValorMonetario
+  + aplicarAcrescimo(valor : ValorMonetario, acrescimo : ValorMonetario) : ValorMonetario
+}
+
+class CalculadoraGaragem <<service>> {
+  + calcular(imovel : Imovel, vagas : int) : ValorMonetario
+  + calcularGaragemPadrao(vagas : int, valorPorVaga : ValorMonetario) : ValorMonetario
+  + calcularGaragemEstudio(vagas : int) : ValorMonetario
+}
+
+class CalculadoraDesconto <<service>> {
+  + calcularDescontoSemFilhos(valor : ValorMonetario) : ValorMonetario
+  + aplicarPercentual(valor : ValorMonetario, percentual : BigDecimal) : ValorMonetario
+}
+
+class CalculadoraTaxaContrato <<service>> {
+  - TAXA_CONTRATO : ValorMonetario = 2000.00
+  - MAX_PARCELAS : int = 5
+  + calcularValorTotal(comParcelamento : boolean, numParcelas : int) : ValorMonetario
+  + gerarParcelas(numParcelas : int) : List<Parcela>
+}
+
+' ==================== ORCHESTRATOR ====================
+
+class Orcamento {
+  - imovel : Imovel
+  - temFilhos : boolean
+  - tiposParcelamento : TipoParcelamento
+  - numParcelas : int
+  - vagasGaragem : int
+  - aluguelBase : ValorMonetario
+  - acrescimos : ValorMonetario
+  - descontos : ValorMonetario
+  - garagem : ValorMonetario
+  - taxaContrato : ValorMonetario
+  - totalMensal : ValorMonetario
+  - parcelas : List<Parcela>
+
+  + Orcamento(imovel : Imovel, temFilhos : boolean, vagasGaragem : int, numParcelas : int)
+  + processar() : void
+  + getAluguelLiquido() : ValorMonetario
+  + getTotalMensal() : ValorMonetario
+  + getParcelas() : List<Parcela>
+  + exibirResumo() : String
+}
+
+' ==================== PERSISTENCE ====================
+
+class GeradorCSV <<utility>> {
+  - CABECALHO : String[]
+  + exportar(orcamento : Orcamento, caminhoArquivo : String) : void
+  + gerarConteudo(orcamento : Orcamento) : String
+}
+
+' ==================== RELATIONSHIPS ====================
+
+TipoImovel ..> Imovel : discrimina >
+TipoImovel --> Apartamento : APARTAMENTO
+TipoImovel --> Casa : CASA
+TipoImovel --> Estudio : ESTUDIO
+
+Imovel <|-- Apartamento
+Imovel <|-- Casa
+Imovel <|-- Estudio
+
+Orcamento --> Imovel : referencia >
+Orcamento *--> ValorMonetario : composto >
+Orcamento *--> Parcela : composto >
+Orcamento --> CalculadoraAluguel : utiliza >
+Orcamento --> CalculadoraGaragem : utiliza >
+Orcamento --> CalculadoraDesconto : utiliza >
+Orcamento --> CalculadoraTaxaContrato : utiliza >
+Orcamento --> GeradorCSV : utiliza >
+
+CalculadoraAluguel ..> CalculadoraDesconto : depende >
+CalculadoraAluguel ..> CalculadoraGaragem : depende >
+CalculadoraTaxaContrato ..> Parcela : cria >
+
+@enduml
