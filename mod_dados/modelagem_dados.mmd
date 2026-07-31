@@ -1,0 +1,48 @@
+erDiagram
+    IMOVEL ||--o{ ORCAMENTO : possui
+    TABELA_PRECO ||--o{ ORCAMENTO : aplica
+    ORCAMENTO ||--o{ PARCELA : contem
+
+    IMOVEL {
+        int id PK
+        string tipo
+        int quartos
+        int vagas_garagem
+    }
+
+    TABELA_PRECO {
+        int id PK
+        string tipo
+        int quartos
+        decimal valor_base
+        decimal acrescimo_dois_quartos
+        decimal desconto_sem_filhos
+        decimal garagem_valor_fixo
+        decimal garagem_valor_extra
+        decimal taxas_contrato
+    }
+
+    ORCAMENTO {
+        int id PK
+        int imovel_id FK
+        int tabela_preco_id FK
+        boolean tem_filhos
+        boolean parcelar
+        int num_parcelas
+        decimal aluguel_base
+        decimal valor_acrescimos
+        decimal valor_desconto
+        decimal valor_garagem
+        decimal taxa_contrato
+        decimal valor_total_mensal
+        decimal parcela_contrato
+        string status
+        datetime criado_em
+    }
+
+    PARCELA {
+        int id PK
+        int orcamento_id FK
+        int numero
+        decimal valor
+    }
