@@ -1,0 +1,106 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classAttributeFontSize 11
+skinparam noteFontSize 10
+skinparam defaultTextAlignment left
+skinparam wrapWidth 300
+
+title Diagrama de Classes — Sistema de Orçamento de Aluguel R.M
+
+abstract class Imovel {
+  - tipo: String
+  - endereco: String
+  - quartos: int
+  - vagasGaragem: int
+  - valorBase: float
+  # calcularValorBase(): float
+  # calcularAcrescimoQuartos(): float
+  # calcularVagasGaragem(): float
+  # calcularDesconto(): float
+  + calcularTotalAluguel(): float
+}
+
+class Apartamento {
+  - valorBase: float = 700.0
+  - acrescimoQuarto: float = 200.0
+  - vagaGaragem: float = 300.0
+  - descontoSemFilhos: float = 0.05
+  # calcularValorBase(): float
+  # calcularAcrescimoQuartos(): float
+  # calcularVagasGaragem(): float
+  # calcularDesconto(): float
+}
+
+class Casa {
+  - valorBase: float = 900.0
+  - acrescimoQuarto: float = 250.0
+  - vagaGaragem: float = 300.0
+  # calcularValorBase(): float
+  # calcularAcrescimoQuartos(): float
+  # calcularVagasGaragem(): float
+  # calcularDesconto(): float
+}
+
+class Estudio {
+  - valorBase: float = 1200.0
+  - vagaDuas: float = 250.0
+  - vagaAdicional: float = 60.0
+  # calcularValorBase(): float
+  # calcularAcrescimoQuartos(): float
+  # calcularVagasGaragem(): float
+  # calcularDesconto(): float
+}
+
+class Locatario {
+  - nome: String
+  - temFilhos: boolean
+  + semFilhos(): boolean
+}
+
+class Orcamento {
+  - imovel: Imovel
+  - locatario: Locatario
+  - taxaContrato: float = 2000.0
+  - parcelasContrato: int = 5
+  - parcelasOrcamento: int = 12
+  + calcularTotalAluguel(): float
+  + calcularParcelaContrato(): float
+  + calcularTotal(): float
+  + exportarCSV(nomeArquivo: String): void
+}
+
+class CSVExporter {
+  + gerarCSV(orcamento: Orcamento, nomeArquivo: String): void
+  + gerarLinhas(orcamento: Orcamento): List<String>
+}
+
+Imovel <|-- Apartamento
+Imovel <|-- Casa
+Imovel <|-- Estudio
+
+Orcamento *-- Imovel : referencia
+Orcamento *-- Locatario : referencia
+Orcamento ..> CSVExporter : utiliza
+
+note right of Orcamento
+  Orquestra os cálculos:
+  - Total aluguel mensal
+  - Parcelamento da taxa
+    de contrato (até 5x)
+  - Exportação CSV com
+    12 parcelas
+end note
+
+note right of Estudio
+  Regras especiais de vagas:
+  2 vagas = R$ 250,00
+  Vagas adicionais = R$ 60,00
+end note
+
+note right of Apartamento
+  Desconto de 5% para
+  locatários sem filhos
+end note
+
+@enduml
