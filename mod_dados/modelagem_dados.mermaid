@@ -1,0 +1,61 @@
+erDiagram
+    TIPO_IMOVEL ||--o{ IMOVEL : "tipo"
+    STATUS_ORCAMENTO ||--o{ ORCAMENTO : "status"
+    STATUS_PARCELAMENTO ||--o{ ORCAMENTO : "parcelamento"
+
+    IMOVEL {
+        int id PK
+        string tipo FK
+        string endereco NOT NULL
+        int quartos
+        int banheiros
+        decimal metragem
+        int vagas_garagem
+        text descricao
+    }
+
+    LOCATARIO {
+        int id PK
+        string nome NOT NULL
+        string email
+        string telefone
+        boolean tem_filhos NOT NULL
+    }
+
+    CORRETOR {
+        int id PK
+        string nome NOT NULL
+        string creci
+        string email
+        string telefone
+    }
+
+    ORCAMENTO {
+        int id PK
+        int imovel_id FK NOT NULL
+        int locatario_id FK NOT NULL
+        int corretor_id FK
+        boolean parcelar NOT NULL
+        int num_parcelas_contrato
+        decimal aluguel_base NOT NULL
+        decimal valor_acrescimos NOT NULL
+        decimal valor_desconto NOT NULL
+        decimal valor_garagem NOT NULL
+        decimal taxa_contrato NOT NULL
+        decimal valor_total_mensal NOT NULL
+        decimal parcela_contrato NOT NULL
+        string status FK NOT NULL
+        timestamp criado_em NOT NULL
+    }
+
+    PARCELA {
+        int id PK
+        int orcamento_id FK NOT NULL
+        int numero NOT NULL
+        decimal valor NOT NULL
+    }
+
+    IMOVEL ||--o{ ORCAMENTO : "1..*"
+    LOCATARIO ||--o{ ORCAMENTO : "1..*"
+    CORRETOR ||--o{ ORCAMENTO : "1..*"
+    ORCAMENTO ||--o{ PARCELA : "1..*"
