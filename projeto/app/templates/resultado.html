@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado do Orçamento — R.M</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Resultado do Orçamento</h1>
+
+    <section class="info-imovel">
+      <h2>Imóvel</h2>
+      <p><strong>Tipo:</strong> {{ imovel.tipo }}</p>
+      <p><strong>Endereço:</strong> {{ imovel.endereco }}</p>
+      <p><strong>Quartos:</strong> {{ imovel.quartos }}</p>
+      <p><strong>Vagas de Garagem:</strong> {{ imovel.vagas_garagem }}</p>
+    </section>
+
+    <section class="info-locatario">
+      <h2>Locatário</h2>
+      <p><strong>Nome:</strong> {{ locatario.nome }}</p>
+      <p><strong>Possui filhos:</strong> {{ "Sim" if locatario.tem_filhos else "Não" }}</p>
+    </section>
+
+    <section class="resumo-orcamento">
+      <h2>Resumo do Orçamento</h2>
+      <table>
+        <tr><td>Valor Base do Aluguel</td><td>R$ {{ "%.2f"|format(resultado.aluguel_mensal.valor_base) }}</td></tr>
+        <tr><td>Acréscimo por Quartos</td><td>R$ {{ "%.2f"|format(resultado.aluguel_mensal.valor_acrescimo_quartos) }}</td></tr>
+        <tr><td>Valor de Garagem</td><td>R$ {{ "%.2f"|format(resultado.aluguel_mensal.valor_garagem) }}</td></tr>
+        <tr><td>Desconto</td><td>R$ {{ "%.2f"|format(resultado.aluguel_mensal.valor_desconto) }}</td></tr>
+        <tr><td><strong>Total Aluguel Mensal</strong></td><td><strong>R$ {{ "%.2f"|format(resultado.aluguel_mensal.total_aluguel) }}</strong></td></tr>
+        <tr><td>Parcela do Contrato</td><td>R$ {{ "%.2f"|format(resultado.parcela_contrato) }}</td></tr>
+        <tr><td><strong>Total Mensal</strong></td><td><strong>R$ {{ "%.2f"|format(resultado.total_mensal) }}</strong></td></tr>
+      </table>
+    </section>
+
+    <section class="parcelas">
+      <h2>12 Parcelas do Orçamento</h2>
+      <table>
+        <thead><tr><th>Parcela</th><th>Valor (R$)</th></tr></thead>
+        <tbody>
+          {% for p in parcelas %}
+          <tr><td>{{ p.parcela }}</td><td>{{ "%.2f"|format(p.valor) }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <a href="/" class="btn">Novo Orçamento</a>
+  </div>
+</body>
+</html>

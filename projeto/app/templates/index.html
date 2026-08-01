@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento de Aluguel — R.M</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Orçamento de Aluguel — R.M</h1>
+    <form action="/gerar_orcamento" method="POST">
+      <fieldset>
+        <legend>Dados do Imóvel</legend>
+        <label for="tipo_imovel">Tipo de Imóvel:</label>
+        <select name="tipo_imovel" id="tipo_imovel" required>
+          <option value="">Selecione...</option>
+          <option value="APARTAMENTO">Apartamento</option>
+          <option value="CASA">Casa</option>
+          <option value="ESTUDIO">Estúdio</option>
+        </select>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" name="endereco" id="endereco" required>
+
+        <label for="quartos">Número de Quartos:</label>
+        <input type="number" name="quartos" id="quartos" min="1" value="1" required>
+
+        <label for="vagas_garagem">Vagas de Garagem:</label>
+        <input type="number" name="vagas_garagem" id="vagas_garagem" min="0" value="0" required>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dados do Locatário</legend>
+        <label for="nome_locatario">Nome:</label>
+        <input type="text" name="nome_locatario" id="nome_locatario" required>
+
+        <label>
+          <input type="checkbox" name="tem_filhos" id="tem_filhos">
+          Possui filhos?
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Parcelamento do Contrato</legend>
+        <label>
+          <input type="checkbox" name="parcelar" id="parcelar">
+          Parcelar taxa de contrato (R$ 2.000,00)
+        </label>
+        <label for="num_parcelas">Número de parcelas (máx. 5):</label>
+        <input type="number" name="num_parcelas" id="num_parcelas" min="1" max="5" value="1">
+      </fieldset>
+
+      <button type="submit">Gerar Orçamento</button>
+    </form>
+  </div>
+</body>
+</html>
