@@ -4,6 +4,13 @@ Enum tipo_imovel {
   ESTUDIO
 }
 
+Enum status_orcamento {
+  PENDENTE
+  APROVADO
+  REJEITADO
+  CONCLUIDO
+}
+
 Enum status_parcelamento {
   A_VISTA
   PARCELADO
@@ -12,27 +19,35 @@ Enum status_parcelamento {
 Table imovel {
   id int [pk]
   tipo tipo_imovel [not null]
-  endereco varchar(255)
+  endereco varchar(255) [not null]
   quartos int
+  banheiros int
+  metragem decimal(10,2)
   vagas_garagem int
+  descricao text
 }
 
-Table tabela_preco {
+Table locatario {
   id int [pk]
-  tipo tipo_imovel [not null, unique]
-  valor_base decimal(10,2) [not null]
-  acrescimo_dois_quartos decimal(10,2)
-  desconto_sem_filhos decimal(3,2)
-  garagem_valor_fixo decimal(10,2)
-  garagem_valor_extra decimal(10,2)
-  taxa_contrato decimal(10,2)
+  nome varchar(255) [not null]
+  email varchar(255)
+  telefone varchar(20)
+  tem_filhos boolean [not null, default: false]
+}
+
+Table corretor {
+  id int [pk]
+  nome varchar(255) [not null]
+  creci varchar(20)
+  email varchar(255)
+  telefone varchar(20)
 }
 
 Table orcamento {
   id int [pk]
   imovel_id int [not null, ref: > imovel.id]
-  tabela_preco_id int [not null, ref: > tabela_preco.id]
-  tem_filhos boolean [not null, default: false]
+  locatario_id int [not null, ref: > locatario.id]
+  corretor_id int [ref: > corretor.id]
   parcelar boolean [not null, default: false]
   num_parcelas_contrato int
   aluguel_base decimal(10,2) [not null]
@@ -42,11 +57,11 @@ Table orcamento {
   taxa_contrato decimal(10,2) [not null, default: 0]
   valor_total_mensal decimal(10,2) [not null]
   parcela_contrato decimal(10,2) [not null, default: 0]
-  status status_parcelamento [not null]
+  status status_orcamento [not null]
   criado_em timestamp [not null]
 }
 
-Table parcela_orcamento {
+Table parcela {
   id int [pk]
   orcamento_id int [not null, ref: > orcamento.id]
   numero int [not null]
