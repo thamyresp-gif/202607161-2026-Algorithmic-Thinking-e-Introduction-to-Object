@@ -1,0 +1,78 @@
+@startuml
+
+entity TIPO_IMOVEL {
+  APARTAMENTO
+  CASA
+  ESTUDIO
+}
+
+entity STATUS_ORCAMENTO {
+  PENDENTE
+  APROVADO
+  REJEITADO
+  CONCLUIDO
+}
+
+entity STATUS_PARCELAMENTO {
+  A_VISTA
+  PARCELADO
+}
+
+entity IMOVEL {
+  id *int
+  tipo TIPO_IMOVEL
+  endereco varchar(255)
+  quartos int
+  banheiros int
+  metragem decimal(10,2)
+  vagas_garagem int
+  descricao text
+}
+
+entity LOCATARIO {
+  id *int
+  nome varchar(255)
+  email varchar(255)
+  telefone varchar(20)
+  tem_filhos boolean
+}
+
+entity CORRETOR {
+  id *int
+  nome varchar(255)
+  creci varchar(20)
+  email varchar(255)
+  telefone varchar(20)
+}
+
+entity ORCAMENTO {
+  id *int
+  imovel_id int
+  locatario_id int
+  corretor_id int
+  parcelar boolean
+  num_parcelas_contrato int
+  aluguel_base decimal(10,2)
+  valor_acrescimos decimal(10,2)
+  valor_desconto decimal(10,2)
+  valor_garagem decimal(10,2)
+  taxa_contrato decimal(10,2)
+  valor_total_mensal decimal(10,2)
+  parcela_contrato decimal(10,2)
+  status STATUS_ORCAMENTO
+  criado_em timestamp
+}
+
+entity PARCELA {
+  id *int
+  orcamento_id int
+  numero int
+  valor decimal(10,2)
+}
+
+IMOVEL ||--o{ ORCAMENTO : contem
+LOCATARIO ||--o{ ORCAMENTO : solicita
+CORRETOR ||--o{ ORCAMENTO : gerencia
+ORCAMENTO ||--o{ PARCELA : possui
+
+@enduml
