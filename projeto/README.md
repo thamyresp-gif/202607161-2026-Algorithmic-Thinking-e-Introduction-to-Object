@@ -4,40 +4,31 @@ Sistema de geração de orçamento de aluguel para a imobiliária R.M.
 
 ## Tecnologias
 
-- **Python 3** + **Flask** (camada de controle)
-- **Flask-SQLAlchemy** (persistência)
-- **SQLite** (banco de dados)
-- **HTML/CSS** (camada de visão)
-- **Gunicorn** (servidor WSGI para produção)
-- **Nginx** (reverse proxy para 10 usuários simultâneos)
+- **Python 3** + **Streamlit** (monolito — frontend + backend em um único app)
+- **SQLite** (banco de dados, opcional para persistência)
+- **Biblioteca nativa `csv`** do Python (exportação de orçamentos)
 
 ## Estrutura do Projeto
 
 ```
 projeto/
-├── app/
-│   ├── __init__.py          # Factory do Flask app
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── imovel.py        # Classes: Imovel, Apartamento, Casa, Estudio
-│   │   ├── locatario.py     # Classe: Locatario
-│   │   ├── orcamento.py     # Classe: Orcamento
-│   │   ├── database.py      # SQLAlchemy instance
-│   │   └── orm_models.py    # Models SQLAlchemy para o banco
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── main.py          # Rotas Flask (controller)
-│   │   └── csv_exporter.py  # Geração de CSV
-│   ├── templates/
-│   │   ├── index.html       # Formulário de entrada
-│   │   └── resultado.html   # Página de resultado
-│   └── static/
-│       └── css/
-│           └── style.css
+├── app.py                  # Aplicação Streamlit (monolito)
+├── models/
+│   ├── __init__.py
+│   ├── imovel.py           # Classes: Imovel, Apartamento, Casa, Estudio
+│   ├── locatario.py        # Classe: Locatario
+│   └── orcamento.py        # Classe: Orcamento
 ├── config.py
 ├── requirements.txt
-└── run.py
+└── README.md
 ```
+
+## Por que Streamlit?
+
+- **Monolito no deploy** — um único arquivo Python (`app.py`) contém toda a aplicação
+- **Sem templates HTML/CSS** — a interface é construída inteiramente em Python
+- **Deploy simples** — `streamlit run app.py` ou deploy em Streamlit Cloud
+- **Ideal para 10 usuários simultâneos** — leve e eficiente para o domínio do problema
 
 ## Requisitos Funcionais Atendidos
 
@@ -56,7 +47,7 @@ projeto/
 ```bash
 cd projeto
 pip install -r requirements.txt
-python run.py
+streamlit run app.py
 ```
 
-Acesse: http://localhost:5000
+Acesse: http://localhost:8501

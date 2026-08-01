@@ -8,20 +8,15 @@ skinparam wrapWidth 300
 skinparam componentStyle uml2
 
 title Arquitetura de Software — Orçamento de Aluguel R.M
-title para 10 usuários simultâneos
+title Monolito Streamlit para 10 usuários simultâneos
 
 node "Cliente\n(Navegador Web)" as client {
-  component "Interface\n(HTML/CSS/JS)" as view
+  component "Interface Streamlit\n(HTML/CSS/JS embutido)" as view
 }
 
-node "Servidor\n(Nginx)" as nginx {
-  component "Reverse Proxy\n(Load Balancer)" as lb
-}
-
-node "Aplicação\n(Gunicorn + Flask)" as app {
-  component "Camada de Visão\n(Flask Templates)" as flask_view
-  component "Camada de Controle\n(Flask Routes)" as controller
-  component "Camada de Modelo\n(Python Classes)" as model {
+node "Servidor\n(Streamlit + Gunicorn)" as server {
+  component "App Streamlit\n(app.py — monolito)" as app
+  component "Camada de Modelo\n(Python OOP)" as model {
     component "Imovel (ABC)" as imovel
     component "Apartamento" as apt
     component "Casa" as casa
@@ -29,31 +24,22 @@ node "Aplicação\n(Gunicorn + Flask)" as app {
     component "Locatario" as loc
     component "Orcamento" as orc
   }
-  component "Camada de Persistência\n(SQLAlchemy ORM)" as persistence
+  component "Exportação CSV\n(biblioteca nativa)" as csv
 }
 
-node "Banco de Dados\n(SQLite)" as db {
+node "Banco de Dados\n(SQLite — opcional)" as db {
   component "Orçamento DB" as sqlite
 }
 
 client --> view : HTTP GET/POST
-view --> flask_view : Requisição HTML
-flask_view --> controller : Roteamento
-controller --> model : Instancia & calcula
-controller --> persistence : Salva/Busca
-persistence --> sqlite : SQL queries
-sqlite --> persistence : Resultados
-persistence --> controller : Dados ORM
-controller --> flask_view : Dados para renderização
-flask_view --> view : HTML renderizado
-view --> client : Resposta visual
+view --> app : Streamlit renderiza\nformulário e resultados
+app --> model : instancia e calcula
+model --> csv : exportar dados
+csv --> server : gera arquivo .csv
+csv --> client : download do CSV
 
-note right of nginx
-  Nginx distribui as requisições\nentre instâncias do Gunicorn\npara suportar 10 usuários simultâneos
-end note
-
-note bottom of sqlite
-  SQLite em modo WAL\npara leitura concorrente\nadequado para 10 usuários leves
+note right of server
+  Monolito Streamlit:\n- Frontend + Backend em\n  um único arquivo (app.py)\n- Sem templates HTML separados\n- Deploy simplificado\n- Ideal para 10 usuários simultâneos
 end note
 
 note left of model
