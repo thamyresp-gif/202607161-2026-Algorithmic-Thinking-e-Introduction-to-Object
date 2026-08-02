@@ -1,0 +1,94 @@
+@startuml
+title Fluxograma — Sistema de Orçamento de Aluguel R.M
+
+start
+
+:Início da Aplicação Streamlit;
+
+:Exibir formulário "Orçamento de Aluguel";
+
+while (Usuário preenche o formulário?) is (sim)
+  :Selecionar Tipo de Imóvel (APARTAMENTO, CASA, ESTUDIO);
+  :Informar Endereço;
+  :Informar Número de Quartos (1-10);
+  :Informar Vagas de Garagem (0-10);
+  :Informar Nome do Locatário;
+  :Selecionar "Possui filhos?" (Sim/Não);
+  :Selecionar "Parcelar taxa de contrato?" (Sim/Não);
+  if (Parcelar?) then (sim)
+    :Selecionar Número de Parcelas (1-5);
+  else (não)
+    :Parcelas = 0;
+  endif
+  :Botão "Gerar Orçamento";
+else (não)
+  stop
+endif
+
+:Validar campos obrigatórios (Endereço e Nome);
+if (Campos vazios?) then (sim)
+  :Exibir erro "Preencha o endereço e o nome do locatário.";
+  stop
+else (não)
+endif
+
+:Instanciar objeto Imovel (polimorfismo);
+if (Tipo == APARTAMENTO?) then (sim)
+  :Apartamento(endereco, quartos, vagas);
+else (não)
+  if (Tipo == CASA?) then (sim)
+    :Casa(endereco, quartos, vagas);
+  else (não)
+    :Estudio(endereco, vagas);
+  endif
+endif
+
+:Instanciar objeto Locatario(nome, tem_filhos);
+:Instanciar objeto Orcamento(imovel, locatario, parcelar, num_parcelas);
+
+:calcular_total() — Orquestra todos os cálculos;
+
+:calcular_valor_base() — Retorna valor base do tipo de imóvel;
+
+:calcular_acrescimo_quartos() — Aplica +R$200 (APART 2 quartos) ou +R$250 (CASA 2 quartos);
+
+:calcular_vagas_garagem() — Aplica regra por tipo:\n  CASA/APART: R$300/vaga\n  ESTUDIO: R$250 (2 vagas) + R$60/vaga extra;
+
+:calcular_desconto() — APARTAMENTO sem filhos: 5% de desconto;
+
+:total_aluguel = base + acrescimos + garagem - desconto;
+
+if (Parcelar?) then (sim)
+  :parcela_contrato = 2000 / num_parcelas;
+else (não)
+  :parcela_contrato = 2000;
+endif
+
+:total_mensal = total_aluguel + parcela_contrato;
+
+:gerar_parcelas_csv() — 12 parcelas;
+
+for each parcela de 1 até 12
+  if (Parcelar AND parcela <= num_parcelas?) then (sim)
+    :valor_parcela_contrato = parcela_contrato;
+  else (não)
+    :valor_parcela_contrato = 0;
+  endif
+  :valor_total = valor_aluguel + valor_parcela_contrato;
+endfor
+
+:Exibir Resumo do Orçamento na interface;
+
+:Exibir métricas (Valor Base, Acréscimos, Desconto, Garagem, Parcela do Contrato);
+
+:Exibir Total Mensal;
+
+:Exibir tabela "12 Parcelas do Orçamento";
+
+:exportar_csv() — Gera arquivo CSV com 12 parcelas;
+
+:Exibir mensagem "Arquivo CSV exportado";
+
+stop
+
+@enduml
