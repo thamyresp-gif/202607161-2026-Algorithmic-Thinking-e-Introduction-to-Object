@@ -1,0 +1,47 @@
+groups:
+  - name: orcamento_alerts
+    rules:
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(app_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency detected"
+          description: "P95 request duration is above 1s for more than 5 minutes"
+
+      - alert: AppDown
+        expr: app_health_status == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application is down"
+          description: "Health check failed for more than 1 minute"
+
+      - alert: HighMemoryUsage
+        expr: app_process_memory_bytes > 200 * 1024 * 1024
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Process memory usage is above 200MB for more than 5 minutes"
+
+      - alert: HighErrorRate
+        expr: rate(app_error_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate"
+          description: "Error rate is above 10% for more than 5 minutes"
+
+      - alert: SlowCalculation
+        expr: histogram_quantile(0.95, rate(app_calculation_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow budget calculation"
+          description: "P95 calculation time is above 500ms for more than 5 minutes"

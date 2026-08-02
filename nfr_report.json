@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-08-02T02:03:48",
+  "axes": {
+    "functional": {
+      "status": "PASS",
+      "coverage": {
+        "lines": 552,
+        "branches": 0,
+        "functions": 0,
+        "missing_lines": 301
+      }
+    },
+    "maintainability": {
+      "status": "PASS",
+      "max_cyclomatic_complexity": 7,
+      "total_loc": 308,
+      "details": {
+        "cyclomatic_complexity": {
+          "models/imovel.py:Imovel": 2,
+          "models/imovel.py:Apartamento": 2,
+          "models/imovel.py:calcular_acrescimo_quartos": 1,
+          "models/imovel.py:calcular_desconto": 1,
+          "models/imovel.py:Casa": 2,
+          "models/imovel.py:Estudio": 2,
+          "models/imovel.py:calcular_vagas_garagem": 1,
+          "models/imovel.py:__init__": 1,
+          "models/imovel.py:calcular_valor_base": 1,
+          "models/imovel.py:calcular_total_aluguel": 1,
+          "models/orcamento.py:gerar_parcelas_csv": 4,
+          "models/orcamento.py:Orcamento": 3,
+          "models/orcamento.py:__init__": 2,
+          "models/orcamento.py:calcular_total": 2,
+          "models/orcamento.py:get_aluguel_liquido": 1,
+          "models/locatario.py:Locatario": 2,
+          "models/locatario.py:__init__": 1,
+          "services/csv_service.py:exportar_csv": 2,
+          "app.py:main": 7
+        },
+        "duplication": {},
+        "loc": {
+          "models/imovel.py": {
+            "loc": 115,
+            "lloc": 82,
+            "comments": 0,
+            "multi": 0,
+            "blank": 28
+          },
+          "models/__init__.py": {
+            "loc": 3,
+            "lloc": 3,
+            "comments": 0,
+            "multi": 0,
+            "blank": 0
+          },
+          "models/orcamento.py": {
+            "loc": 71,
+            "lloc": 48,
+            "comments": 0,
+            "multi": 0,
+            "blank": 8
+          },
+          "models/locatario.py": {
+            "loc": 4,
+            "lloc": 4,
+            "comments": 0,
+            "multi": 0,
+            "blank": 0
+          },
+          "services/__init__.py": {
+            "loc": 0,
+            "lloc": 0,
+            "comments": 0,
+            "multi": 0,
+            "blank": 0
+          },
+          "services/csv_service.py": {
+            "loc": 24,
+            "lloc": 15,
+            "comments": 0,
+            "multi": 0,
+            "blank": 5
+          },
+          "app.py": {
+            "loc": 86,
+            "lloc": 73,
+            "comments": 0,
+            "multi": 0,
+            "blank": 19
+          },
+          "config.py": {
+            "loc": 5,
+            "lloc": 4,
+            "comments": 0,
+            "multi": 0,
+            "blank": 1
+          }
+        }
+      }
+    },
+    "security": {
+      "status": "PASS",
+      "findings": {
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "issues": []
+      }
+    },
+    "performance": {
+      "status": "PASS",
+      "max_avg_time_ms": 0.007,
+      "details": {
+        "APARTAMENTO": {
+          "avg_time_ms": 0.007,
+          "iterations": 1000
+        },
+        "CASA": {
+          "avg_time_ms": 0.006,
+          "iterations": 1000
+        },
+        "ESTUDIO": {
+          "avg_time_ms": 0.004,
+          "iterations": 1000
+        }
+      }
+    },
+    "portability": {
+      "status": "PASS",
+      "install_exit_code": 0
+    },
+    "compatibility": {
+      "status": "PASS",
+      "rows": 12,
+      "checksum": "227d8d71e50b82bfd36942ce17bef9adcf62b661ed62b2b1f65fcd95b10c6ea7",
+      "path": "exports/orcamento_20260802_020405.csv"
+    }
+  },
+  "overall": "PASS"
+}

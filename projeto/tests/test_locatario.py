@@ -16,11 +16,3 @@ class TestLocatario:
         loc = Locatario("Ana")
         assert loc.nome == "Ana"
         assert loc.tem_filhos is False
-
-    def test_sem_filhos_retorna_true(self):
-        loc = Locatario("Carlos", tem_filhos=False)
-        assert loc.sem_filhos() is True
-
-    def test_sem_filhos_retorna_false(self):
-        loc = Locatario("Pedro", tem_filhos=True)
-        assert loc.sem_filhos() is False

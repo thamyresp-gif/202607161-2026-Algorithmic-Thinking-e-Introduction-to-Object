@@ -3,6 +3,16 @@ from models.imovel import Apartamento, Casa, Estudio
 
 
 class TestApartamento:
+    def test_apartamento(self):
+        apt = Apartamento("Rua A, 100", quartos=2, vagas_garagem=1)
+        assert apt.tipo == "APARTAMENTO"
+        assert apt.endereco == "Rua A, 100"
+        assert apt.quartos == 2
+        assert apt.vagas_garagem == 1
+        assert apt.calcular_valor_base() == 700.0
+        assert apt.calcular_acrescimo_quartos() == 200.0
+        assert apt.calcular_vagas_garagem() == 300.0
+
     def test_valor_base_apartamento(self):
         apt = Apartamento("Rua A, 100")
         resultado = apt.calcular_valor_base()

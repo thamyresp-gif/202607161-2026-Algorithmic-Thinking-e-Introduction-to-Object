@@ -1,10 +1,8 @@
 import streamlit as st
-import csv
-import os
-from datetime import datetime
 from models.imovel import Apartamento, Casa, Estudio
 from models.locatario import Locatario
 from models.orcamento import Orcamento
+from services.csv_service import exportar_csv
 
 
 def main():
@@ -82,31 +80,6 @@ def main():
 
         csv_path = exportar_csv(orcamento)
         st.success(f"📁 Arquivo CSV exportado: `{csv_path}`")
-
-
-def exportar_csv(orcamento):
-    parcelas = orcamento.gerar_parcelas_csv()
-    total = orcamento.calcular_total()
-
-    os.makedirs("exports", exist_ok=True)
-    nome_arquivo = f"orcamento_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-    caminho = os.path.join("exports", nome_arquivo)
-
-    with open(caminho, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Parcela", "Valor (R$)"])
-        for p in parcelas:
-            writer.writerow([p["parcela"], f"{p['valor']:.2f}"])
-        writer.writerow([])
-        writer.writerow(["Resumo", "Valor (R$)"])
-        writer.writerow(["Aluguel base", f"{total['aluguel_mensal']['valor_base']:.2f}"])
-        writer.writerow(["Acréscimos", f"{total['aluguel_mensal']['valor_acrescimo_quartos']:.2f}"])
-        writer.writerow(["Desconto", f"{total['aluguel_mensal']['valor_desconto']:.2f}"])
-        writer.writerow(["Garagem", f"{total['aluguel_mensal']['valor_garagem']:.2f}"])
-        writer.writerow(["Parcela contrato", f"{total['parcela_contrato']:.2f}"])
-        writer.writerow(["Total mensal", f"{total['total_mensal']:.2f}"])
-
-    return caminho
 
 
 if __name__ == "__main__":
