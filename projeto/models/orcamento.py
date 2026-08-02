@@ -67,7 +67,10 @@ class Orcamento:
                 if i <= self.num_parcelas:
                     parcela_contrato = self.parcela_contrato
             else:
-                parcela_contrato = self.parcela_contrato
+                if i == 1:
+                    parcela_contrato = self.parcela_contrato
+                else:
+                    parcela_contrato = 0.0
             valor_total = round(aluguel_liquido + parcela_contrato, 2)
             parcelas.append({
                 "parcela": i,
