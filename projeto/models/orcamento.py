@@ -1,5 +1,12 @@
 from .imovel import Imovel
 from .locatario import Locatario
+import os
+import sys
+
+_parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
+
 from config import TAXA_CONTRATO, MAX_PARCELAS_CONTRATO, PARCELAS_ORCAMENTO
 
 

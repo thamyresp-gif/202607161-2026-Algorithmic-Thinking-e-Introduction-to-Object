@@ -107,6 +107,8 @@ class Estudio(Imovel):
         return 0.0
 
     def calcular_vagas_garagem(self):
+        if self.vagas_garagem == 0:
+            return 0.0
         if self.vagas_garagem <= 2:
             return self.VAGA_DUAS
         return self.VAGA_DUAS + self.VAGA_ADICIONAL * (self.vagas_garagem - 2)
